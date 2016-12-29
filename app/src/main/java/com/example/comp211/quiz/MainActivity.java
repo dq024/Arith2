@@ -1,16 +1,21 @@
 package com.example.comp211.quiz;
 
+import android.content.res.Configuration;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.content.pm.ActivityInfo;
+import android.content.Intent;
 
 public class MainActivity extends AppCompatActivity {
 
+    private boolean phoneDevice = true; // force portrait mode when device is a phone
+
+    //configuring the MainActivity
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -18,21 +23,43 @@ public class MainActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        });
+        // Portrait Orientation setting
+        // determine screen size
+        int screenSize = getResources().getConfiguration().screenLayout &
+        Configuration.SCREENLAYOUT_SIZE_MASK;
+
+        // if device is a tablet, set phoneDevice to false
+        if (screenSize == Configuration.SCREENLAYOUT_SIZE_LARGE ||
+        screenSize == Configuration.SCREENLAYOUT_SIZE_XLARGE)
+            phoneDevice = false; // not a phone-sized device
+
+        // if running on phone-sized device, allow only portrait orientation
+        if (phoneDevice)
+            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+
     }
 
+    // called after onCreate completes execution
     @Override
+    protected void onStart() {
+        super.onStart();
+    }
+
+        @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_main, menu);
-        return true;
+
+        // check orientation first
+        int orientation = getResources().getConfiguration().orientation;
+
+        // Inflate menu only if orientation is portrait
+        if (orientation == Configuration.ORIENTATION_PORTRAIT)
+        {
+            getMenuInflater().inflate(R.menu.menu_main, menu);
+            return true;
+        }
+        else
+            return false;
     }
 
     @Override
@@ -42,10 +69,12 @@ public class MainActivity extends AppCompatActivity {
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
 
+        Intent questionListIntent = new Intent(this, Questions_List_Activity.class);
+        startActivity(questionListIntent);
+
         //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
+        //if (id == R.id.action_settings) {
+        //    return true;
 
         return super.onOptionsItemSelected(item);
     }
