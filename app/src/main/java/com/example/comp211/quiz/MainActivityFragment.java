@@ -47,7 +47,7 @@ import android.view.ViewGroup;
 public class MainActivityFragment extends Fragment {
 
     //used when we log error messages using class Log to be able to distinguish error msgs
-    private static final String TAG = "FlagQuiz Activity";
+    private static final String TAG = "Arithmetic";
 
     // no of questions in the quiz
     private static final int NUMBER_OF_QUESTIONS = 10;
@@ -115,7 +115,11 @@ public class MainActivityFragment extends Fragment {
         //guessLinearLayouts[0] = (LinearLayout) view.findViewById(R.id.row1LinearLayout);
         //guessLinearLayouts[1] = (LinearLayout) view.findViewById(R.id.row2LinearLayout);
         //answerTextView = (TextView) view.findViewById(R.id.answerTextView);
-
+        button1.setOnClickListener(guessButtonListener);
+        button2.setOnClickListener(guessButtonListener);
+        button3.setOnClickListener(guessButtonListener);
+        button4.setOnClickListener(guessButtonListener);
+        /*
         // configure listeners for the guess Buttons
         for (LinearLayout row : guessLinearLayouts) {
             for (int column = 0; column < row.getChildCount(); column++) {
@@ -123,7 +127,7 @@ public class MainActivityFragment extends Fragment {
                 button.setOnClickListener(guessButtonListener);
             }
         }
-
+        */
         // set questionNumberTextView's text
         questionNumberTextView.setText(getString(R.string.questions, 1, NUMBER_OF_QUESTIONS));
 
@@ -152,8 +156,9 @@ public class MainActivityFragment extends Fragment {
     // after the user guesses a correct flag, load the next flag
     private void loadNextQuestion() {
 
-        QuestionCreate db = new QuestionCreate(getContext());  // my question bank class
-        quesList = db.getAllQuestions();  // this will fetch all quetonall questions
+
+        QuestionCreate db = new QuestionCreate(getActivity());  // my question bank class
+        quesList = db.getAllQuestions();  // this will fetch all questions
         currentQ = quesList.get(qid); // the current question
 
         // assign values to guess buttons
@@ -163,9 +168,22 @@ public class MainActivityFragment extends Fragment {
         button2.setText(currentQ.getANSB());
         button3.setText(currentQ.getANSC());
         button4.setText(currentQ.getANSD());
-
-
-        /*
+        button1.setEnabled(true);
+        if (currentQ.getANSB() == null) {
+            Log.d(TAG, "Button text unchanged");
+            /* restore state */
+        } else {
+            Log.d(TAG, "should work");
+            /* initialize app */
+        }
+        if (button1.getText() == "New Button") {
+            Log.d(TAG, "Button text unchanged");
+            /* restore state */
+        } else {
+            Log.d(TAG, "should work");
+            /* initialize app */
+        }
+            /*
         // get file name of the next flag and remove it from the list
         String nextQuestion = quizQuestionList.remove(0);
         correctAnswer = nextQuestion; // update the correct answer
