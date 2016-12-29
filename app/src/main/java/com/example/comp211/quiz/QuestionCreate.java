@@ -20,7 +20,7 @@ public class QuestionCreate extends SQLiteOpenHelper {
     // Database Name
     private static final String DATABASE_NAME = "simpleMaths";
     // tasks table name
-    private static final String TABLE_QUEST = "table";
+    private static final String TABLE_QUEST = "aListOfQuestions";
     // tasks Table Columns names
     private static final String KEY_ID = "qid";
     private static final String KEY_QUESTION = "question";
@@ -39,20 +39,23 @@ public class QuestionCreate extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase db) {
-        dbase = db;
-        String sql = "CREATE TABLE IF NOT EXISTS " + TABLE_QUEST + " ( "
-                + KEY_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " + KEY_QUESTION
-                + " TEXT, " + KEY_ANSWER + " TEXT, " + KEY_ANSA + " TEXT, "
-                + KEY_ANSB + " TEXT, " + KEY_ANSC + " TEXT, " + KEY_ANSD + " Text)";
-        db.execSQL(sql);
-        addQuestions();
+        String CREATE_TABLE = "CREATE TABLE " + TABLE_QUEST + " ( "
+                + KEY_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
+                + KEY_QUESTION + " TEXT , "
+                + KEY_ANSWER + " TEXT , "
+                + KEY_ANSA + " TEXT , "
+                + KEY_ANSB + " TEXT , "
+                + KEY_ANSC + " TEXT , "
+                + KEY_ANSD + " TEXT )";
+        db.execSQL(CREATE_TABLE);
+        addQuestions(db);
         // db.close();
     }
 
     // generating all questions and saving into dbase
-    private void addQuestions() {
+    private void addQuestions(SQLiteDatabase db) {
         int NUMBER_OF_QUESTIONS = 10;
-        for (int questnumber = 0; questnumber < NUMBER_OF_QUESTIONS; questnumber++){
+        for (int questNumber = 0; questNumber < NUMBER_OF_QUESTIONS; questNumber++){
             int randomNumber_1 = 10 + (int) (Math.random() * 100);
             int randomNumber_2 = 10 + (int) (Math.random() * 100);
             int sum = randomNumber_1 + randomNumber_2;
@@ -64,7 +67,16 @@ public class QuestionCreate extends SQLiteOpenHelper {
             Question q1 = new Question(randomNumber_1 + " + " + randomNumber_2 + " = ?",
                     Integer.toString(sum), Integer.toString(answerA), Integer.toString(answerB),
                     Integer.toString(answerC), Integer.toString(answerD));
-            this.addQuestion(q1);
+            //this.addQuestion(q1);
+            ContentValues values = new ContentValues();
+            values.put(KEY_QUESTION, q1.getQUESTION());
+            values.put(KEY_ANSWER, q1.getANSWER());
+            values.put(KEY_ANSA, q1.getANSA());
+            values.put(KEY_ANSB, q1.getANSB());
+            values.put(KEY_ANSC, q1.getANSC());
+            values.put(KEY_ANSD, q1.getANSD());
+            // Inserting Row
+            db.insert(TABLE_QUEST, null, values);
         }
     }
 
@@ -75,10 +87,9 @@ public class QuestionCreate extends SQLiteOpenHelper {
         // Create tables again
         onCreate(db);
     }
-
+    /*
     // Adding new question
     public void addQuestion(Question frage) {
-        // SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
         values.put(KEY_QUESTION, frage.getQUESTION());
         values.put(KEY_ANSWER, frage.getANSWER());
@@ -86,15 +97,15 @@ public class QuestionCreate extends SQLiteOpenHelper {
         values.put(KEY_ANSB, frage.getANSB());
         values.put(KEY_ANSC, frage.getANSC());
         values.put(KEY_ANSD, frage.getANSD());
-
-        // Inserting Row
-        dbase.insert(TABLE_QUEST, null, values);
     }
+    */
 
     public List<Question> getAllQuestions() {
+
         List<Question> questionList = new ArrayList<Question>();
         // Select All Query
         String selectQuery = "SELECT  * FROM " + TABLE_QUEST;
+
         dbase = this.getReadableDatabase();
         Cursor cursor = dbase.rawQuery(selectQuery, null);
         // looping through all rows and adding to list
@@ -112,6 +123,7 @@ public class QuestionCreate extends SQLiteOpenHelper {
                 questionList.add(frage);
             } while (cursor.moveToNext());
         }
+        cursor.close();
         // return question list
         return questionList;
     }

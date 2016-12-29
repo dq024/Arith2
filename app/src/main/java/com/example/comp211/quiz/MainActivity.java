@@ -43,6 +43,10 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
+        MainActivityFragment quizFragment = (MainActivityFragment)
+            getSupportFragmentManager().findFragmentById(
+                R.id.quizFragment);
+        quizFragment.resetQuiz();
     }
 
         @Override
