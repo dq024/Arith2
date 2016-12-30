@@ -4,6 +4,8 @@
     <string name="results">%1$d guesses, %2$.02f%% correct</string>
     <string name="incorrect_answer">Incorrect!</string>
     <string name="questions">Question %1$d of %2$d</string>
+    <string name="answerIsCorrect">%1$s!</string>
+    <string name="reset_quiz">Reset Quiz</string>
     <string name="answer_question">Solve the simple question</string>
     <string name="title_activity_questions__list_">Questions_List</string>
 </resources>

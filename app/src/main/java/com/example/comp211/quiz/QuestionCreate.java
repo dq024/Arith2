@@ -9,6 +9,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.util.Log;
 
 /**
  * Created by delon on 28.12.2016.
@@ -33,12 +34,13 @@ public class QuestionCreate extends SQLiteOpenHelper {
     private SQLiteDatabase dbase;
 
     // Constructor
-    public QuestionCreate(Context context) {
+    public QuestionCreate(Context context, int DATABASE_VERSION) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
     }
 
     @Override
     public void onCreate(SQLiteDatabase db) {
+        cleanDatabase(db);
         String CREATE_TABLE = "CREATE TABLE " + TABLE_QUEST + " ( "
                 + KEY_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
                 + KEY_QUESTION + " TEXT , "
@@ -59,7 +61,7 @@ public class QuestionCreate extends SQLiteOpenHelper {
             int randomNumber_1 = 10 + (int) (Math.random() * 100);
             int randomNumber_2 = 10 + (int) (Math.random() * 100);
             int sum = randomNumber_1 + randomNumber_2;
-            int fix = ThreadLocalRandom.current().nextInt(sum-2, sum+1);
+            int fix = ThreadLocalRandom.current().nextInt(sum-2, sum+2);
             int answerA = fix - 1;
             int answerB = fix;
             int answerC = fix + 1;
@@ -86,6 +88,11 @@ public class QuestionCreate extends SQLiteOpenHelper {
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_QUEST);
         // Create tables again
         onCreate(db);
+    }
+
+    public void cleanDatabase(SQLiteDatabase db) {
+        db.execSQL("DROP TABLE IF EXISTS " + TABLE_QUEST);
+        Log.d("Database", "Table removed");
     }
     /*
     // Adding new question
@@ -124,6 +131,7 @@ public class QuestionCreate extends SQLiteOpenHelper {
             } while (cursor.moveToNext());
         }
         cursor.close();
+        Log.d("Database", "Clean");
         // return question list
         return questionList;
     }

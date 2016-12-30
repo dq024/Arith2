@@ -105,11 +105,11 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceMedium"
-        android:text="Medium Text"
+        android:text="@string/answerIsCorrect"
         android:id="@+id/answerTextView"
         android:layout_gravity="bottom|center_horizontal"
         android:gravity="center_horizontal"
         android:textSize="@dimen/answer_size"
-        android:textStyle="bold"/>
+        android:textStyle="bold" />
 
 </LinearLayout>
