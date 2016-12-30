@@ -40,7 +40,6 @@ public class QuestionCreate extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase db) {
-        cleanDatabase(db);
         String CREATE_TABLE = "CREATE TABLE " + TABLE_QUEST + " ( "
                 + KEY_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
                 + KEY_QUESTION + " TEXT , "
@@ -89,10 +88,11 @@ public class QuestionCreate extends SQLiteOpenHelper {
         // Create tables again
         onCreate(db);
     }
-
-    public void cleanDatabase(SQLiteDatabase db) {
+    @Override
+    public void onDowngrade(SQLiteDatabase db, int oldV, int newV) {
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_QUEST);
         Log.d("Database", "Table removed");
+        onCreate(db);
     }
     /*
     // Adding new question

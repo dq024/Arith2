@@ -10,6 +10,7 @@ import java.util.Set;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -56,7 +57,7 @@ public class MainActivityFragment extends Fragment {
     QuestionCreate db;
     List<Question> quesList;
     //int score = 0;
-    int qid = 0, databaseVersion = 2;
+    int qid = 0, databaseVersion;
 
     Question currentQ;
     //TextView txtQuestion, times, scored;
@@ -161,21 +162,28 @@ public class MainActivityFragment extends Fragment {
     // after the user guesses a correct flag, load the next flag
     private void loadNextQuestion() {
         // set questionNumberTextView's text
-        questionNumberTextView.setText(getString(R.string.questions, (totalGuesses + 1), NUMBER_OF_QUESTIONS));
+        if (qid > 10)
+            ;
+        else {
 
-        answerTextView.setText(""); // clear answerTextView
-        currentQ = quesList.get(qid); // the current question
+            questionNumberTextView.setText(getString(R.string.questions, (totalGuesses + 1), NUMBER_OF_QUESTIONS));
 
-        // assign values to guess buttons
-        //for (int row = 0; row < guessRows; row++) {
-        mathsQuestionTextView.setText(currentQ.getQUESTION());
-        button1.setText(currentQ.getANSA());
-        button2.setText(currentQ.getANSB());
-        button3.setText(currentQ.getANSC());
-        button4.setText(currentQ.getANSD());
-        enableButtons();
+            answerTextView.setText(""); // clear answerTextView
+            currentQ = quesList.get(qid); // the current question
 
-        Log.d(TAG, button1.getText().toString());
+            // assign values to guess buttons
+            //for (int row = 0; row < guessRows; row++) {
+            mathsQuestionTextView.setText(currentQ.getQUESTION());
+            button1.setText(currentQ.getANSA());
+            button2.setText(currentQ.getANSB());
+            button3.setText(currentQ.getANSC());
+            button4.setText(currentQ.getANSD());
+            enableButtons();
+
+            Log.d(TAG, currentQ.getANSWER().toString());
+
+        }
+
             /* restore state */
             /*
         // get file name of the next flag and remove it from the list
@@ -303,33 +311,24 @@ public class MainActivityFragment extends Fragment {
             //if use cheat button and if use skip button needs to be included here
             if (totalGuesses == NUMBER_OF_QUESTIONS) {
                 // DialogFragment to display quiz stats and start new quiz
-                DialogFragment quizResults = new DialogFragment() {
-                    // create an AlertDialog and return it
-                    @Override
-                    public Dialog onCreateDialog(Bundle bundle) {
-                        AlertDialog.Builder builder =
-                                new AlertDialog.Builder(getActivity());
-                        builder.setMessage(getString(R.string.results,
-                                totalGuesses,
-                                (1000 / (double) totalGuesses)));
+                AlertDialog.Builder display = new AlertDialog.Builder(getContext());
+                display.setTitle(R.string.alertDialog);
+                display.setMessage(getString(R.string.results,
+                        correctAnswers,
+                        ( (100 * correctAnswers) / (double) NUMBER_OF_QUESTIONS)));
 
-                        // "Reset Quiz" Button
-                        builder.setPositiveButton(R.string.reset_quiz,
-                                new DialogInterface.OnClickListener() {
-                                    public void onClick(DialogInterface dialog,
-                                                        int id) {
-                                        resetQuiz();
-                                    }
-                                }
-                        );
-
-                        return builder.create(); // return the AlertDialog
-                    }
-                };
-
+                display.setPositiveButton(R.string.reset_quiz, new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog,
+                                                int id) {
+                                resetQuiz();
+                            }
+                        }
+                    );
+                display.setCancelable(false);
+                display.show();
                 // use FragmentManager to display the DialogFragment
-                quizResults.setCancelable(false);
-                quizResults.show(getFragmentManager(), "quiz results");
+                //quizResults.setCancelable(false);
+                //quizResults.show(getFragmentManager(), "quiz results");
             } else {
                 if (guess.equals(answer)) { // if the guess is correct
                     ++correctAnswers; // increment the number of correct answers
@@ -395,4 +394,49 @@ public class MainActivityFragment extends Fragment {
         button3.setEnabled(true);
         button4.setEnabled(true);
     }
+/*
+    public static class MyDialogFragment extends DialogFragment {
+
+        public static MyDialogFragment newInstance(int title) {
+            MyDialogFragment fm = new MyDialogFragment();
+            Bundle arguments = new Bundle();
+            arguments.putInt("title", title);
+            fm.setArguments(arguments);
+            return fm;
+        }
+
+        //DialogFragment quizResults = new DialogFragment() {
+            // create an AlertDialog and return it
+        @Override
+        public Dialog onCreateDialog(Bundle bundle) {
+            int title = getArguments().getInt("title");
+
+            AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+            // set a title
+            builder.setTitle(title);
+
+            // add an Icon
+            //builder.setIcon();
+
+            // set message
+            builder.setMessage(getString(R.string.results,
+                    totalGuesses,
+                    (1000 / (double) totalGuesses)));
+
+            // "Reset Quiz" Button
+            builder.setPositiveButton(R.string.reset_quiz,
+                    new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog,
+                                            int id) {
+                            getParentFragment().resetQuiz();
+                        }
+                    }
+            );
+
+            return builder.create(); // return the AlertDialog
+        }
+    };
+    }
+*/
+
 }
